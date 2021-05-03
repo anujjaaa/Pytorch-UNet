@@ -52,7 +52,7 @@ def predict_img(net,
 def get_args():
     parser = argparse.ArgumentParser(description='Predict masks from input images',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--model', '-m', default='MODEL.pth',
+    parser.add_argument('--model', '-m', default='/home/adminp/Documents/Pytorch-UNet/unet_carvana_scale1_epoch5.pth',
                         metavar='FILE',
                         help="Specify the file in which the model is stored")
     parser.add_argument('--input', '-i', metavar='INPUT', nargs='+',
@@ -106,17 +106,19 @@ if __name__ == "__main__":
 
     logging.info("Loading model {}".format(args.model))
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = 'cpu'#torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
+    
+    net.load_state_dict(torch.load(args.model, map_location=device)['model_state_dict'])
     net.to(device=device)
-    net.load_state_dict(torch.load(args.model, map_location=device))
-
     logging.info("Model loaded !")
 
     for i, fn in enumerate(in_files):
         logging.info("\nPredicting image {} ...".format(fn))
 
         img = Image.open(fn)
+        newsize = (1280, 720)
+        img = img.resize(newsize)
 
         mask = predict_img(net=net,
                            full_img=img,
