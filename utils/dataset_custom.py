@@ -16,8 +16,7 @@ class BasicDataset(Dataset):
         self.imgs_dir = imgs_dir
         self.masks_dir = masks_dir
         self.mask_suffix = mask_suffix
-        self.height = 480
-        self.width = 360
+        self.scale = 0.5  # 360
 
         self.ids = [splitext(file)[0] for file in listdir(imgs_dir)
                     if not file.startswith('.')]
@@ -27,6 +26,7 @@ class BasicDataset(Dataset):
 
     def preprocess(self, img, mask):
         
+    
         # Augmentation
         # flip {0: vertical, 1: horizontal, 2: both, 3: none}
         flip_num = randint(0, 3)
@@ -55,13 +55,15 @@ class BasicDataset(Dataset):
         mask = mask/255
         # msk_as_np = np.expand_dims(msk_as_np, axis=0)  # add additional dimension
         
+
         if len(mask.shape) == 2:
             mask = np.expand_dims(mask, axis=2)
             
         # HWC to CHW
         img = img.transpose((2, 0, 1))
         mask = mask.transpose((2, 0, 1))
-        
+    
+
         return img, mask
 
     def __getitem__(self, i):
@@ -73,7 +75,7 @@ class BasicDataset(Dataset):
             f'Either no mask or multiple masks found for the ID {idx}: {mask_file}'
         assert len(img_file) == 1, \
             f'Either no image or multiple images found for the ID {idx}: {img_file}'
-        
+
         mask = cv2.imread(mask_file[0])
         img = cv2.imread(img_file[0])
         

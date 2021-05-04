@@ -112,15 +112,15 @@ def train_model(model, device,
 
 
 if __name__ == '__main__':
-    IMAGES_PATH = '/home/antpc/anuja/Pytorch-UNet1/data/Images/'
-    MASKS_PATH = '/home/antpc/anuja/Pytorch-UNet1/data/Labels/'
+    IMAGES_PATH = '/home/antpc/anuja/Pytorch-UNet1/data/data/Images_resize/'
+    MASKS_PATH = '/home/antpc/anuja/Pytorch-UNet1/data/data/Labels_resize/'
     MODEL_CHECKPOINT_PATH = '/home/antpc/anuja/Pytorch-UNet1/checkpoints/'
     img_scale = 0.5
 
     dataset = BasicDataset(IMAGES_PATH, MASKS_PATH)#, img_scale)
 
     unet = UNet(n_channels=3, n_classes=1)
-    summary(unet.cuda(), (3, 480, 360))
+    # summary(unet.cuda(), (3, 480, 360))
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # device = torch.device('cpu')
